@@ -36,7 +36,14 @@ parse_args() {
 
   # Move argument pointer to next.
   shift $(($OPTIND - 1))
-  ANSIBLE_MODE=${1:-"push"}
+  ANSIBLE_MODE=${1}
+
+  if [ -z ${ANSIBLE_MODE} ]; then
+    [ $DEBUG ] && echo "No <ansible-mode provided>"
+    [ $DEBUG ] && echo
+    usage
+    exit 1
+  fi
 
   [ $DEBUG ] && echo "Will prepare machine for ansible '${ANSIBLE_MODE}' mode"
 
@@ -51,27 +58,34 @@ parse_args() {
   for pkg in "${_pkgs}"; do
     if [ -x "$(which ${pkg})" ]; then
 
+      rc=2
+
       [ $DEBUG ] && echo "  $pkg already installed...skipping"
-      echo
+      [ $DEBUG ] && echo
 
     else
       [ $DEBUG ] && echo " $pkg not installed...installing"
 
       # install ansible from ubuntu ppa
-      if [ ${pkg} == 'ansible' ] && [ $(hostnamectl  | grep -o "Ubuntu")  == "Ubuntu" ]
+      if [ ${pkg} = 'ansible' ] && [ $(hostnamectl  | grep -o "Ubuntu")  = "Ubuntu" ]
       then
-        sudo apt-get install software-properties-common
-        sudo apt-add-repository ppa:ansible/ansible
-        sudo apt-get update
-        sudo apt-get install ansible
+        apt-get install software-properties-common
+        apt-add-repository ppa:ansible/ansible
+        apt-get update
+        apt-get install ansible
       else
         # install with package manager
-        sudo $PKG_MANAGER install -y ${pkg}
+        $PKG_MANAGER update
+        $PKG_MANAGER install -y ${pkg}
       fi
+
+      rc=$?
     fi
 
     [ $DEBUG ] && echo "...all done"
   done
+    return $rc
+
 }
 
 # echo $(basename $0)
@@ -83,7 +97,7 @@ if [ $(basename $0) = "ansible-bootstrap.sh" ]; then
   # guess package manager
 
   [ $DEBUG ] && echo "guessing OS package manager..."
-  echo
+  [ $DEBUG ] && echo
 
   # catch any debian or derivative machine
   if [ -x $(which apt-get) ]; then
@@ -98,12 +112,36 @@ if [ $(basename $0) = "ansible-bootstrap.sh" ]; then
   fi
 
   [ $DEBUG ] && echo "found $(basename ${PKG_MANAGER})!"
-  echo
+  [ $DEBUG ] && echo
 
   if [ "${ANSIBLE_MODE}" = "pull" ]; then
     installpkg ansible git
+    rc=$?
   else
-    installpkg python
+    # adjust python pkg name depending on OS
+    if [ $(hostnamectl  | grep -o "Ubuntu")  = "Ubuntu" ]
+    then
+      installpkg python
+      rc=$?
+    else
+      installpkg python2
+      rc=$?
+    fi
   fi
+
+  case $rc in
+    0)
+      echo -n "changed=True msg=OK"
+      exit 0
+      ;;
+    1)
+      echo -n "changed=False msg=ansible bootstrap failed"
+      exit 1
+      ;;
+    2)
+      echo -n "changed=False msg=OK"
+      exit 0
+      ;;
+  esac
 
 fi
