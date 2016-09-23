@@ -8,6 +8,7 @@ Shell module packaged in a role to bootsrap a machine for ansible.
 
 Minimum required ansible version is 1.2.
 
+
 ## Role Variables
 
 ### Variables conditionally loaded
@@ -54,7 +55,7 @@ git clone git@github.com:archf/ansible-bootstrap.git /path/to/roles_path
 But I often add it as a submdule in a given `playbook_dir` repository.
 
 ```shell
-git submdule add git@github.com:archf/ansible-bootstrap.git <playbook_dir>/roles/bootstrap
+git submodule add git@github.com:archf/ansible-bootstrap.git <playbook_dir>/roles/bootstrap
 ```
 
 As the role is not managed by Ansible Galaxy, you do not have to specify the
@@ -68,8 +69,7 @@ Basic usage is:
   - role: bootstrap
 ```
 
-
-## Dependencies
+## Ansible role dependencies
 
 None.
 
@@ -85,6 +85,14 @@ BSD.
 ## Author Information
 
 Felix Archambault.
+
+## Role stack
+
+This role was carefully selected to be part an ultimate deck of roles to manage
+your infrastructure.
+
+All roles' documentation is wrapped in this [convenient guide](http://127.0.0.1:8000/).
+
 
 ---
 This README was generated using ansidoc. This tool is available on pypi!
