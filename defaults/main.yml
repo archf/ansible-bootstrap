@@ -1,6 +1,6 @@
 ---
 
 # By default, bootstrap a server to use ansible in 'push' mode.  Mode can
-# either be (push|pull). See shell script files/ansible-bootstrap.sh for
-# details
+# either be (push|pull). See module in library/bootstrap for
+# details.
 ansible_mode: push

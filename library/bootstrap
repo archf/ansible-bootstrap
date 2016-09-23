@@ -1,4 +1,6 @@
 #!/bin/sh
+# module to bootstrap a server to be able to use ansible
+# this can be either use as a script or as an ansible module
 
 usage() {
 
@@ -88,11 +90,41 @@ parse_args() {
 
 }
 
-# echo $(basename $0)
-if [ $(basename $0) = "ansible-bootstrap.sh" ]; then
+if [ $(basename $0) = "bootstrap" ]; then
 
-  # see how we're called
-  parse_args $@
+  if [ $(basename $1) = "args" ]; then
+    # this is being called by ansible
+
+    # Ansible transports arguments to modules in a file. The
+    # path to the arguments file is in $1, and the file
+    # contains the module's arguments like in this example:
+    #
+    #       name="name" value=15 dest=/tmp/destfile
+    #
+    # This is a little dangerous (!?!), but I'm going to ask
+    # the current shell to parse that file; it will set
+    # variables accordingly.
+
+    # sample content:
+
+    # cat <path>/args
+
+    # _ansible_version="2.1.1.0"
+    # _ansible_selinux_special_fs="'['"'"'fuse'"'"',
+    #                             '"'"'nfs'"'"',
+    #                             '"'"'vboxsf'"'"',
+    #                             '"'"'ramfs'"'"']'"
+
+    # _ansible_no_log="False" _ansible_verbosity="0"
+    # _ansible_syslog_facility="LOG_USER" _ansible_diff="False" mode="push"
+    # _ansible_debug="False" _ansible_check_mode="True" %
+
+    . ${1}
+  else
+
+    # called from cli
+    parse_args $@
+  fi
 
   # guess package manager
 
@@ -131,15 +163,15 @@ if [ $(basename $0) = "ansible-bootstrap.sh" ]; then
 
   case $rc in
     0)
-      echo -n "changed=True msg=OK"
+      echo '{"changed": true, "msg": ok"}'
       exit 0
       ;;
     1)
-      echo -n "changed=False msg=ansible bootstrap failed"
+      echo '{"changed": false, "msg": "ansible bootstrapping failed"}'
       exit 1
       ;;
     2)
-      echo -n "changed=False msg=OK"
+      echo '{"changed": false, "msg": "ok"}'
       exit 0
       ;;
   esac

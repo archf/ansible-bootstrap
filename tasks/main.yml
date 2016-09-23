@@ -1,6 +1,5 @@
 ---
 # tasks file for ansible-bootstrap
 
-- name: bootstrap target machine for push mode
-  become: yes
-  script: ansible-bootstrap.sh {{ansible_mode}}
+- name: bootstrap target machine for '{{ansible_mode}}' mode
+  bootstrap: mode={{ansible_mode}}
