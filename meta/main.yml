@@ -1,7 +1,6 @@
 galaxy_info:
   author: Felix Archambault
   description: Shell module packaged in a role to bootsrap a machine for ansible.
-  # company: your company (optional)
 
   license: BSD
 
@@ -21,36 +20,36 @@ galaxy_info:
   # platform on this list, let us know and we'll get it added!
   #
   platforms:
-   name: EL
-   versions:
-    - 6
-    - 7
-   name: Fedora
-   versions:
-    - all
-    - 16
-    - 17
-    - 18
-    - 19
-    - 20
-    - 21
-    - 22
-    - 23
-   name: Ubuntu
-   versions:
-    - trusty
-    - utopic
-    - vivid
-    - wily
-    - xenial
-   name: Debian
-   versions:
-    - jessie
-    - lenny
-    - sid
-    - squeeze
-    - stretch
-    - wheezy
+    - name: EL
+      versions:
+        - 6
+        - 7
+    - name: Fedora
+      versions:
+        - all
+        - 16
+        - 17
+        - 18
+        - 19
+        - 20
+        - 21
+        - 22
+        - 23
+    - name: Ubuntu
+      versions:
+        - trusty
+        - utopic
+        - vivid
+        - wily
+        - xenial
+    - name: Debian
+      versions:
+        - jessie
+        - lenny
+        - sid
+        - squeeze
+        - stretch
+        - wheezy
 
   galaxy_tags:
     - systems
