@@ -1,9 +1,6 @@
 ---
 
 github_account: archf
-# requirements:
-# description:
-
 role_stack: |
   This role was carefully selected to be part an ultimate deck of roles to manage
   your infrastructure.
